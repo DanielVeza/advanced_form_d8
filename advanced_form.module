@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains advanced_form.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function advanced_form_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the advanced_form module.
+    case 'help.page.advanced_form':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('D8 port of the Advanced form module') . '</p>';
+      return $output;
+
+    default:
+  }
+}

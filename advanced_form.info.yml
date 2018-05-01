@@ -1,0 +1,5 @@
+name: 'Advanced Form'
+type: module
+description: 'D8 port of the Advanced form module'
+core: 8.x
+package: 'Custom'

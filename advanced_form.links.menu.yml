@@ -1,0 +1,7 @@
+advanced_form.advanced_form_settings_form:
+  title: 'Advanced form settings'
+  route_name: advanced_form.advanced_form_settings_form
+  description: 'Advanced form settings'
+  parent: system.admin_config_system
+  weight: 99
+
