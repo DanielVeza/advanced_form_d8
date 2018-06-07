@@ -21,4 +21,17 @@ function advanced_form_help($route_name, RouteMatchInterface $route_match) {
 
     default:
   }
+  return false;
+}
+
+function advanced_form_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $background_color = '#000';
+  $form['#attached']['html_head'][] = [
+    [
+      '#tag' => 'style',
+      '#value' => '.js-form-item { background: ' . $background_color . '; }',
+    ],
+    'my-custom-module'
+  ];
+  kint($form);
 }

@@ -53,9 +53,36 @@ class advancedFormSettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    $this->config('advanced_form.advancedformsettings')
-      ->set('rules_global', $form_state->getValue('rules_global'))
-      ->save();
+    $enteredRules = $form_state->getValue('rules_global');
+    $rules = $this->parseRules($enteredRules);
+    //kint($rules);
+    //die();
+    $rules = $enteredRules;
+    if(!empty($rules)) {
+      $this->config('advanced_form.advancedformsettings')
+        ->set('rules_global', $rules)
+        ->save();
+    }
+  }
+
+  /**
+   * Not working at the moment. Causes validation issues.
+   * @param $text
+   * @return array
+   */
+  private function parseRules($text) {
+    $ruleset = [];
+    $rules = explode(PHP_EOL, $text);
+    foreach ($rules as $rule) {
+      // Enquote everything before trying to json it.
+      $rule = preg_replace('/([a-zA-Z0-9_\#\-\. ]+)/', '"$1"', $rule);
+      $rule_object = json_decode('{' . $rule . '}');
+      if (empty($rule_object)) {
+        drupal_set_message("JSON rule <pre>$rule</pre> could not be parsed", 'error');
+      }
+      $ruleset = array_merge_recursive($ruleset, (array) $rule_object);
+    }
+    return $ruleset;
   }
 
 }
