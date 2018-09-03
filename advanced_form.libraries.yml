@@ -1,0 +1,6 @@
+admin:
+  version: 1.0
+  js:
+    js/advanced_form.js: {}
+  dependencies:
+    - core/jquery

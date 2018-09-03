@@ -25,13 +25,39 @@ function advanced_form_help($route_name, RouteMatchInterface $route_match) {
 }
 
 function advanced_form_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
-  $background_color = '#000';
+  /* Role class - Put into function */
+  // Get the bundle (Content type).
+  $bundle = FALSE;
+  $form_object = $form_state->getFormObject();
+  if (!empty($form_object) && $form_object instanceof \Drupal\node\NodeForm) {
+    $entity = $form_object->getEntity();
+    if(!empty($entity)) {
+      $bundle = $entity->bundle();
+    }
+  }
+  if(!empty($bundle)) {
+    // Craft the edit form ID and check it matches.
+    if($form_id == 'node_' . $bundle . '_form' || $form_id == 'node_' . $bundle . '_edit_form') {
+      $account = \Drupal::currentUser();
+      $roles = $account->getRoles();
+      $form['#attributes']['class'][] = 'advancedform-filtered';
+      // The getRoles() method will return us the machine names, so there is no need
+      // to process roles names additionally.
+      foreach ($roles as $role) {
+        $form['#attributes']['class'][] = 'role-' . $role;
+      }
+    }
+  }
+
+  /* CSS - TODO - Function*/
+  $dir = 'public://css/advanced_form.css';
+  $css = file_get_contents($dir);
   $form['#attached']['html_head'][] = [
     [
       '#tag' => 'style',
-      '#value' => '.js-form-item { background: ' . $background_color . '; }',
+      '#value' => $css,
     ],
     'my-custom-module'
   ];
-  kint($form);
+  $form['#attached']['library'][] = 'advanced_form/admin';
 }

@@ -62,6 +62,7 @@ class advancedFormSettingsForm extends ConfigFormBase {
       $this->config('advanced_form.advancedformsettings')
         ->set('rules_global', $rules)
         ->save();
+      $this->createCSS($rules);
     }
   }
 
@@ -83,6 +84,27 @@ class advancedFormSettingsForm extends ConfigFormBase {
       $ruleset = array_merge_recursive($ruleset, (array) $rule_object);
     }
     return $ruleset;
+  }
+
+  private function createCSS($rules) {
+    $ruleset = explode(PHP_EOL, $rules);
+    $selectors = [];
+    $css = '';
+    foreach($ruleset as $rule) {
+      $selectors[] = strstr($rule, ':', true);
+    }
+    foreach ($selectors as $key => $selector) {
+      $concatSelectors = strstr($ruleset[$key], '[');
+      $concatSelectors = str_replace('[', ' ', $concatSelectors);
+      $concatSelectors = str_replace(']', '', $concatSelectors);
+      $css .= 'form.advancedform-filtered';
+      $css .= $selector . '' . $concatSelectors . ' {' . PHP_EOL;
+      $css .= '  display: none;' . PHP_EOL;
+      $css .= '}' . PHP_EOL;
+    }
+    //$dir = drupal_get_path('module', 'advanced_form') . '/css/advanced_form.css';
+    $dir = 'public://css/advanced_form.css';
+    $file = file_unmanaged_save_data($css, $dir, FILE_EXISTS_REPLACE);
   }
 
 }
