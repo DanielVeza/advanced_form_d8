@@ -1,6 +1,10 @@
 admin:
   version: 1.0
+  css:
+    theme:
+      css/advanced-form.css: {}
   js:
-    js/advanced_form.js: {}
+    js/advanced-form.js: {}
   dependencies:
     - core/jquery
+    - core/jquery.once

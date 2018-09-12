@@ -36,11 +36,12 @@ function advanced_form_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $
     }
   }
   if(!empty($bundle)) {
+    $form['#attached']['library'][] = 'advanced_form/admin';
     // Craft the edit form ID and check it matches.
     if($form_id == 'node_' . $bundle . '_form' || $form_id == 'node_' . $bundle . '_edit_form') {
       $account = \Drupal::currentUser();
       $roles = $account->getRoles();
-      $form['#attributes']['class'][] = 'advancedform-filtered';
+      $form['#attributes']['class'][] = 'advanced-form-filtered';
       // The getRoles() method will return us the machine names, so there is no need
       // to process roles names additionally.
       foreach ($roles as $role) {
@@ -50,14 +51,16 @@ function advanced_form_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $
   }
 
   /* CSS - TODO - Function*/
-  $dir = 'public://css/advanced_form.css';
-  $css = file_get_contents($dir);
-  $form['#attached']['html_head'][] = [
-    [
-      '#tag' => 'style',
-      '#value' => $css,
-    ],
-    'my-custom-module'
-  ];
-  $form['#attached']['library'][] = 'advanced_form/admin';
+  $dir = 'public://css/advanced-form.css';
+  if (file_exists($dir)) {
+    $css = file_get_contents($dir);
+    $form['#attached']['html_head'][] = [
+      [
+        '#tag' => 'style',
+        '#value' => $css,
+      ],
+      'advanced-form'
+    ];
+    //$form['#attached']['library'][] = 'advanced_form/admin';
+  }
 }

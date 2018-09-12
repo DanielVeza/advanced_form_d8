@@ -1,0 +1,13 @@
+.advanced-form-toggle {
+	float: right;
+	margin-bottom: 20px;
+	opacity: 0.5;
+}
+
+.advanced-form-toggle:hover {
+	opacity: 1;
+}
+
+.advanced-form-toggle:focus {
+	opacity: 1;
+}
