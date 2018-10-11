@@ -54,10 +54,8 @@ class advancedFormSettingsForm extends ConfigFormBase {
     parent::submitForm($form, $form_state);
 
     $enteredRules = $form_state->getValue('rules_global');
-    $rules = $this->parseRules($enteredRules);
-    //kint($rules);
-    //die();
-    $rules = $enteredRules;
+    //$rules = $this->parseRules($enteredRules);
+    $rules = trim($enteredRules);
     if(!empty($rules)) {
       $this->config('advanced_form.advancedformsettings')
         ->set('rules_global', $rules)
@@ -69,19 +67,22 @@ class advancedFormSettingsForm extends ConfigFormBase {
   /**
    * Not working at the moment. Causes validation issues.
    * @param $text
-   * @return array
+   * @return string
    */
   private function parseRules($text) {
-    $ruleset = [];
-    $rules = explode(PHP_EOL, $text);
+    $ruleset = '';
+    $rules = explode("\n", $text);
     foreach ($rules as $rule) {
-      // Enquote everything before trying to json it.
-      $rule = preg_replace('/([a-zA-Z0-9_\#\-\. ]+)/', '"$1"', $rule);
-      $rule_object = json_decode('{' . $rule . '}');
-      if (empty($rule_object)) {
-        drupal_set_message("JSON rule <pre>$rule</pre> could not be parsed", 'error');
+      $rule = trim($rule);
+      if (!empty($rule)) {
+        // Enquote everything before trying to json it.
+        $rule = preg_replace('/([a-zA-Z0-9_\#\-\. ]+)/', '$1', $rule);
+        if (empty($rule)) {
+          drupal_set_message("JSON rule <pre>$rule</pre> could not be parsed", 'error');
+        } else {
+          $ruleset .= $rule . PHP_EOL;
+        }
       }
-      $ruleset = array_merge_recursive($ruleset, (array) $rule_object);
     }
     return $ruleset;
   }
@@ -102,7 +103,6 @@ class advancedFormSettingsForm extends ConfigFormBase {
       $css .= '  display: none;' . PHP_EOL;
       $css .= '}' . PHP_EOL;
     }
-    //$dir = drupal_get_path('module', 'advanced_form') . '/css/advanced-form.css';
     $dir = 'public://css/advanced-form.css';
     $file = file_unmanaged_save_data($css, $dir, FILE_EXISTS_REPLACE);
   }
