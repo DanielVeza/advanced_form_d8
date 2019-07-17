@@ -54,7 +54,6 @@ class advancedFormSettingsForm extends ConfigFormBase {
     parent::submitForm($form, $form_state);
 
     $enteredRules = $form_state->getValue('rules_global');
-    //$rules = $this->parseRules($enteredRules);
     $rules = trim($enteredRules);
     if(!empty($rules)) {
       $this->config('advanced_form.advancedformsettings')
@@ -62,29 +61,6 @@ class advancedFormSettingsForm extends ConfigFormBase {
         ->save();
       $this->createCSS($rules);
     }
-  }
-
-  /**
-   * Not working at the moment. Causes validation issues.
-   * @param $text
-   * @return string
-   */
-  private function parseRules($text) {
-    $ruleset = '';
-    $rules = explode("\n", $text);
-    foreach ($rules as $rule) {
-      $rule = trim($rule);
-      if (!empty($rule)) {
-        // Enquote everything before trying to json it.
-        $rule = preg_replace('/([a-zA-Z0-9_\#\-\. ]+)/', '$1', $rule);
-        if (empty($rule)) {
-          drupal_set_message("JSON rule <pre>$rule</pre> could not be parsed", 'error');
-        } else {
-          $ruleset .= $rule . PHP_EOL;
-        }
-      }
-    }
-    return $ruleset;
   }
 
   private function createCSS($rules) {
